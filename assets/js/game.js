@@ -7,8 +7,11 @@ var fightOrSkip = function() {
     window.alert("You need to provide a valid answer! Please try again.");
     return fightOrSkip();
   }
+
+  promptFight = promptFight.toLowerCase();
+
   // if player picks "skip" confirm and then stop the loop
-  if (promptFight === "skip" || promptFight === "SKIP") {
+  if (promptFight === "skip") {
     // confirm player wants to skip
     var confirmSkip = window.confirm ("Are you sure you'd like to quit?");
 
@@ -17,7 +20,10 @@ var fightOrSkip = function() {
       window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
       // subtract money from playerMoney for skipping
       playerInfo.playerMoney = playerInfo.money - 10;
-      shop();
+
+      // return true if player wants to leave
+      return true;
+      return false;
     }
   }
 }
@@ -25,7 +31,11 @@ var fightOrSkip = function() {
 var fight = function(enemy) {
   // repeat and execute as long as the enemy-robot is alive 
   while (playerInfo.health > 0 && enemy.health > 0) {
-    fightOrSkip(); // <-- Replace code with this function call
+    // ask player if they'd like to fight or skip using fightOrSkip function
+    if (fightOrSkip()) {
+      //if true, leave fight by breaking loop
+      break;
+    }
     var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
     // ask player if they'd like to fight or run
     var promptFight = window.prompt('Would you like to FIGHT or SKIP this battle? Enter "FIGHT" or "SKIP" to choose.');
@@ -157,25 +167,20 @@ var shop = function() {
   );
 
   // use switch to carry out action
+  debugger;
+  shopOptionPrompt = parseInt(shopOptionPrompt);
   switch (shopOptionPrompt) {
-    case "REFILL":
-    case "refill":
-      playerInfo.refillHealth();
+    case 1: 
+    playerInfo.fillHealth();
       break;
-    case "UPGRADE":
-    case "upgrade":
+    case 2:
       playerInfo.upgradeAttack();
       break;
-    case "LEAVE": // new case
-    case "leave":
+    case 3:
       window.alert("Leaving the store.");
-
-      // do nothing, so function will end
       break;
     default:
       window.alert(" You did not pick a valid option. Try again.");
-
-      // call shop() again to force player to pick a valid option
       shop();
       break;
   }
